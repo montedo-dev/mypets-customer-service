@@ -1,0 +1,46 @@
+version: "3.0"
+
+services:
+  # nginx
+  nmypets-customer-nginx:
+    image: nginx:stable-alpine
+    container_name: mypets-nginx-container
+    ports:
+        - "8081:80"
+    volumes:
+        - ./:/var/www/html
+        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+        - mypets-customer-php
+        - mypets-customer-mysql
+    networks:
+        - mypets-customer
+
+  #php 7.4
+  mypets-customer-php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mypets-customer-php-container
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - 9000:8000
+    networks:
+      - mypets-customer
+
+  #mysql
+  mypets-customer-mysql:
+    image: mysql:5.7.22
+    environment:
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./storage/db:/var/lib/mysql
+    ports:
+      - 33061:3306
+    networks:
+      - mypets-customer
+
+networks:
+  mypets-customer:
