@@ -38,7 +38,7 @@ services:
     volumes:
       - ./storage/db:/var/lib/mysql
     ports:
-      - 33061:3306
+      - 3406:3306
     networks:
       - mypets-customer
 
